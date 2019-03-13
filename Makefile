@@ -31,7 +31,13 @@ login:
 	@echo "Login to container " $(CID) 
 	@docker exec -it $(CID) bash
 
-
+# Prints version
+version:
+	@ echo '{"Version": "$(APP_VERSION)"}'
+	
+# Tags with default set of tags
+tag%default:
+	@ make tag latest $(APP_VERSION) $(COMMIT_ID) $(COMMIT_TAG)
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################
