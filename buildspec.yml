@@ -13,7 +13,7 @@ phases:
       - echo Building the Docker image...
       - docker build -t demoml:latest ./container
       - docker tag demoml:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/demo-ml-registry:latest
-      - make version
+      - make version > build/version.json
   post_build:
     commands:
       - echo Build completed on `date`
