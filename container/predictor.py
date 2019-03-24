@@ -38,6 +38,8 @@ class ScoringService(object):
         labels, probs = cls.model.predict(text, k)
         for l, p in zip(labels, probs):
             ret[l] = p
+        print("Input[%s]"%text)
+        print("Output[%s]"%json.dumps(ret))
         return ret
 
 
