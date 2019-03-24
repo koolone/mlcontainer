@@ -7,18 +7,19 @@ phases:
       - $(aws ecr get-login --no-include-email --region $AWS_REGION)
   build:
     commands:
-      - export BUILD_ID=$(echo $CODEBUILD_BUILD_ID | sed 's/^[^:]*://g')
-      - export APP_VERSION=$CODEBUILD_RESOLVED_SOURCE_VERSION.$BUILD_ID
+      - export BUILD_ID=$(echo $CODEBUILD_BUILD_ID | sed 's/^[^:]*://g' |cut -d- -f1)
+      - export COMMIT_ID=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION |cut -c -7)
+      - export APP_VERSION=$COMMIT_ID.$BUILD_ID
       - echo Build started on `date`
       - echo Building the Docker image...
       - docker build -t demoml:latest ./container
-      - docker tag demoml:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/demo-ml-registry:latest
+      - docker tag demoml:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/demo-ml-registry:$APP_VERSION
       - make version > version.json
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/demo-ml-registry:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/demo-ml-registry:$APP_VERSION
 artifacts:
   files:
     - version.json
