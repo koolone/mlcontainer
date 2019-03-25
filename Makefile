@@ -11,6 +11,16 @@ PYTHON_INTERPRETER = python3
 CONTAINER_NAME = demo-ml
 IMAGE_NAME = demo-ml-image
 
+#################################################################################
+$(shell export TERM=xterm-color256)
+# Console setting
+RED := "\e[1;31m"
+YELLOW := "\e[1;33m"
+NC := "\e[0m"
+
+
+INFO := @bash -c 'printf $(YELLOW); echo "=> $$1"; printf $(NC)' MESSAGE
+WARNING := @bash -c 'printf $(RED); echo "WARNING: $$1"; printf $(NC)' MESSAGE
 
 ## Delete all compiled Python files
 clean:
@@ -19,6 +29,7 @@ clean:
 
 ## Build local Docker image
 image:
+	${INFO} "Build container..."
 	@docker build -t $(IMAGE_NAME) ./container
 
 ## Deploy and start Docker image locally
@@ -27,6 +38,7 @@ start:
 
 ## Login to container shell
 login:
+	${INFO} "Login to ECR..."
 	@$(eval CID=$(shell docker ps -qf name=$(CONTAINER_NAME)))
 	@echo "Login to container " $(CID) 
 	@docker exec -it $(CID) bash
